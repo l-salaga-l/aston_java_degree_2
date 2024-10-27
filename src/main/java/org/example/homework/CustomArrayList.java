@@ -1,6 +1,7 @@
 package org.example.homework;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 
@@ -18,6 +19,29 @@ public class CustomArrayList<E> {
 
     public CustomArrayList() {
         elements = EMPTY_ARRAY;
+    }
+
+    public CustomArrayList(int capacity) {
+        if (capacity < 0) {
+            throw new IllegalArgumentException("Capacity must be a positive integer");
+        } else if (capacity == 0) {
+            elements = EMPTY_ARRAY;
+        } else {
+            elements = new Object[capacity];
+        }
+    }
+
+    public CustomArrayList(Collection<? extends E> c) {
+        Object[] elements = c.toArray();
+        if ((size = elements.length) != 0) {
+            if (c.getClass() == ArrayList.class) {
+                this.elements = elements;
+            } else {
+                this.elements = Arrays.copyOf(elements, size, Object[].class);
+            }
+        } else {
+            this.elements = EMPTY_ARRAY;
+        }
     }
 
     public void add(int index, E element) {
