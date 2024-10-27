@@ -45,10 +45,7 @@ public class CustomArrayList<E> {
     }
 
     public void add(int index, E element) {
-        if (index < 0 || index > size) {
-            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
-        }
-
+        checkIndex(index);
         resize();
 
         System.arraycopy(elements, index, elements, index + 1, size - index);
@@ -63,22 +60,36 @@ public class CustomArrayList<E> {
     }
 
     public void clear() {
-
+        for (int i = 0; i < size; i++) {
+            elements[i] = null;
+        }
+        size = 0;
     }
 
     public E get(int index) {
-        return null;
+        checkIndex(index);
+        return (E) elements[index];
     }
 
     public boolean isEmpty() {
-        return false;
+        return size == 0;
     }
 
     public E remove(int index) {
-        return null;
+        checkIndex(index);
+        E result = (E) elements[index];
+        System.arraycopy(elements, index + 1, elements, index, size - index - 1);
+        elements[--size] = null;
+        return result;
     }
 
     public boolean remove(Object o) {
+        for (int i = 0; i < size; i++) {
+            if (elements[i].equals(o)) {
+                remove(i);
+                return true;
+            }
+        }
         return false;
     }
 
@@ -89,6 +100,12 @@ public class CustomArrayList<E> {
         if (size == elements.length) {
             size = elements.length * 2 + 1;
             elements = Arrays.copyOf(elements, size);
+        }
+    }
+
+    private void checkIndex(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
         }
     }
 }
