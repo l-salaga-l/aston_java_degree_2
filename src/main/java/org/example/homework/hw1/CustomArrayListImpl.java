@@ -179,14 +179,14 @@ public class CustomArrayListImpl<E> extends AbstractCustomArrayList<E>
 
     private int partition(Object[] array, int left, int right, Comparator<? super E> c) {
         E pivot = (E) array[(left + right) / 2];
-        while (left <= right) {
-            while (c.compare((E) array[right], pivot) < 0) {
+        while (left < right) {
+            while (c.compare((E) array[right], pivot) > 0) {
                 right--;
             }
-            while (c.compare((E) array[left], pivot) > 0) {
+            while (c.compare(pivot, (E) array[left]) > 0) {
                 left++;
             }
-            if (left <= right) {
+            if (left < right) {
                 E temp = (E) array[right];
                 array[right] = array[left];
                 array[left] = temp;
