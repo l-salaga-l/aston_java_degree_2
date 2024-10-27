@@ -1,8 +1,9 @@
-package org.example.homework;
+package org.example.homework.hw1;
 
 import java.util.*;
 
-public class CustomArrayList<E> {
+public class CustomArrayListImpl<E> extends AbstractCustomArrayList<E>
+        implements CustomArrayList<E>{
 
     private static final int DEFAULT_CAPACITY = 10;
 
@@ -12,12 +13,12 @@ public class CustomArrayList<E> {
 
     private int size;
 
-    public CustomArrayList() {
+    public CustomArrayListImpl() {
         elements = EMPTY_ARRAY;
         size = 0;
     }
 
-    public CustomArrayList(int capacity) {
+    public CustomArrayListImpl(int capacity) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be a positive integer");
         } else if (capacity == 0) {
@@ -27,7 +28,7 @@ public class CustomArrayList<E> {
         }
     }
 
-    public CustomArrayList(Collection<? extends E> c) {
+    public CustomArrayListImpl(Collection<? extends E> c) {
         Object[] elements = c.toArray();
         if ((size = elements.length) != 0) {
             if (c.getClass() == ArrayList.class) {
@@ -40,6 +41,7 @@ public class CustomArrayList<E> {
         }
     }
 
+    @Override
     public void add(int index, E element) {
         checkIndex(index);
         resize();
@@ -49,12 +51,14 @@ public class CustomArrayList<E> {
         size++;
     }
 
+    @Override
     public void addAll(Collection<? extends E> c) {
         for (E e : c) {
             add(size, e);
         }
     }
 
+    @Override
     public void clear() {
         for (int i = 0; i < size; i++) {
             elements[i] = null;
@@ -62,15 +66,18 @@ public class CustomArrayList<E> {
         size = 0;
     }
 
+    @Override
     public E get(int index) {
         checkIndex(index);
         return (E) elements[index];
     }
 
+    @Override
     public boolean isEmpty() {
         return size == 0;
     }
 
+    @Override
     public E remove(int index) {
         checkIndex(index);
         E result = (E) elements[index];
@@ -79,6 +86,7 @@ public class CustomArrayList<E> {
         return result;
     }
 
+    @Override
     public boolean remove(Object o) {
         for (int i = 0; i < size; i++) {
             if (elements[i].equals(o)) {
@@ -89,6 +97,7 @@ public class CustomArrayList<E> {
         return false;
     }
 
+    @Override
     public void sort(Comparator<? super E> c) {
         quicksort(c);
     }
