@@ -94,6 +94,7 @@ public class CustomArrayList<E> {
     }
 
     public void sort(Comparator<? super E> c) {
+        quicksort(c);
     }
 
     private void resize() {
@@ -107,5 +108,55 @@ public class CustomArrayList<E> {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
         }
+    }
+
+    private void quicksort(Comparator<? super E> c) {
+        int left = 0, right = size - 1;
+
+        // Хранилище начальных и конечных индексов подмассивов
+        int[] indexStack = new int[size];
+        int head = -1;
+
+        indexStack[++head] = left;
+        indexStack[++head] = right;
+
+        while (head >= 0) {
+            // Извлекаем левую и правую границу
+            right = indexStack[head--];
+            left = indexStack[head--];
+
+            // Выполняем разбиение
+            int indexPivot = partition(elements, left, right, c);
+
+            if (left < indexPivot - 1) {
+                indexStack[++head] = left;
+                indexStack[++head] = indexPivot;
+            }
+
+            if (indexPivot + 1 < right) {
+                indexStack[++head] = indexPivot + 1;
+                indexStack[++head] = right;
+            }
+        }
+    }
+
+    private int partition(Object[] array, int left, int right, Comparator<? super E> c) {
+        E pivot = (E) array[(left + right) / 2];
+        while (left <= right) {
+            while (c.compare((E) array[right], pivot) < 0) {
+                right--;
+            }
+            while (c.compare((E) array[left], pivot) > 0) {
+                left++;
+            }
+            if (left <= right) {
+                E temp = (E) array[right];
+                array[right] = array[left];
+                array[left] = temp;
+                left++;
+                right--;
+            }
+        }
+        return left;
     }
 }
