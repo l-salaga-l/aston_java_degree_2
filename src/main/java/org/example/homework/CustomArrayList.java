@@ -45,11 +45,21 @@ public class CustomArrayList<E> {
     }
 
     public void add(int index, E element) {
+        if (index < 0 || index > size) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
 
+        resize();
+
+        System.arraycopy(elements, index, elements, index + 1, size - index);
+        elements[index] = element;
+        size++;
     }
 
     public void addAll(Collection<? extends E> c) {
-
+        for (E e : c) {
+            add(size, e);
+        }
     }
 
     public void clear() {
@@ -73,5 +83,12 @@ public class CustomArrayList<E> {
     }
 
     public void sort(Comparator<? super E> c) {
+    }
+
+    private void resize() {
+        if (size == elements.length) {
+            size = elements.length * 2 + 1;
+            elements = Arrays.copyOf(elements, size);
+        }
     }
 }
