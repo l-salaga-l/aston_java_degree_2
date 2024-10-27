@@ -1,14 +1,9 @@
 package org.example.homework;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
+import java.util.*;
 
 public class CustomArrayList<E> {
-    /**
-     * Default initial capacity.
-     */
+
     private static final int DEFAULT_CAPACITY = 10;
 
     private static final Object[] EMPTY_ARRAY = {};
@@ -19,6 +14,7 @@ public class CustomArrayList<E> {
 
     public CustomArrayList() {
         elements = EMPTY_ARRAY;
+        size = 0;
     }
 
     public CustomArrayList(int capacity) {
@@ -97,15 +93,47 @@ public class CustomArrayList<E> {
         quicksort(c);
     }
 
+    @Override
+    public String toString() {
+        if (size == 0) {
+            return "[]";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append('[');
+        for (int i = 0; i <= size; i++) {
+            E e = (E) elements[i];
+            sb.append(e);
+            if (i == size - 1) {
+                return sb.append(']').toString();
+            }
+            sb.append(',').append(' ');
+        }
+        return sb.toString();
+    }
+
     private void resize() {
         if (size == elements.length) {
-            size = elements.length * 2 + 1;
-            elements = Arrays.copyOf(elements, size);
+            elements = grow();
+        }
+    }
+
+    private Object[] grow() {
+        return grow(size + 1);
+    }
+
+    private Object[] grow(int size) {
+        int oldSize = elements.length;
+        if (oldSize > 0 || elements != EMPTY_ARRAY) {
+            int newSize = oldSize * 2 + 1;
+            return elements = Arrays.copyOf(elements, newSize);
+        } else {
+            return elements = new Object[Math.max(DEFAULT_CAPACITY, size)];
         }
     }
 
     private void checkIndex(int index) {
-        if (index < 0 || index >= size) {
+        if (index < 0 || index > size) {
             throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
         }
     }
