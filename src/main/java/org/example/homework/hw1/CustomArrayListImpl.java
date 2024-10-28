@@ -5,19 +5,39 @@ import java.util.*;
 public class CustomArrayListImpl<E> extends AbstractCustomArrayList<E>
         implements CustomArrayList<E>{
 
+    /**
+     * Стандартная емкость по умолчанию для списка
+     */
     private static final int DEFAULT_CAPACITY = 10;
 
+    /**
+     * Пустой массив для обозначения состояния
+     */
     private static final Object[] EMPTY_ARRAY = {};
 
+    /**
+     * Массив для хранения элементов списка
+     */
     Object[] elements;
 
+    /**
+     * Текущее количество элементов в списке
+     */
     private int size;
 
+    /**
+     * Конструктор по умолчанию, инициализирует пустой список
+     */
     public CustomArrayListImpl() {
         elements = EMPTY_ARRAY;
         size = 0;
     }
 
+    /**
+     * Конструктор с указанием емкости списка
+     * @param capacity начальная емкость списка
+     * @throws IllegalArgumentException если емкость < 0
+     */
     public CustomArrayListImpl(int capacity) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be a positive integer");
@@ -28,6 +48,10 @@ public class CustomArrayListImpl<E> extends AbstractCustomArrayList<E>
         }
     }
 
+    /**
+     * Конструктор, инициализирующий список элементами из указанной коллекции
+     * @param c коллекция, элементы которой будут добавлены в список
+     */
     public CustomArrayListImpl(Collection<? extends E> c) {
         Object[] elements = c.toArray();
         if ((size = elements.length) != 0) {
@@ -41,14 +65,30 @@ public class CustomArrayListImpl<E> extends AbstractCustomArrayList<E>
         }
     }
 
+    /**
+     * Возвращает текущее количество элементов в списке
+     * @return размер списка
+     */
     public int size() {
         return size;
     }
 
+    /**
+     * Добавляет элемент в конец списка
+     * @param element элемент, который нужно добавить
+     */
+    @Override
     public void add(E element) {
         add(size, element);
     }
 
+    /**
+     * Вставляет указанный элемент по заданному индексу
+     *
+     * @param index индекс, по которому нужно вставить элемент
+     * @param element элемент, который нужно вставить
+     * @throws IndexOutOfBoundsException если индекс вне допустимого диапазона
+     */
     @Override
     public void add(int index, E element) {
         checkIndexForAdd(index);
@@ -59,6 +99,11 @@ public class CustomArrayListImpl<E> extends AbstractCustomArrayList<E>
         size++;
     }
 
+    /**
+     * Добавляет все элементы из указанной коллекции в конец списка
+     *
+     * @param c коллекция, элементы которой будут добавлены в список
+     */
     @Override
     public void addAll(Collection<? extends E> c) {
         for (E e : c) {
@@ -66,6 +111,9 @@ public class CustomArrayListImpl<E> extends AbstractCustomArrayList<E>
         }
     }
 
+    /**
+     * Очищает список, удаляя все элементы
+     */
     @Override
     public void clear() {
         for (int i = 0; i < size; i++) {
@@ -74,17 +122,33 @@ public class CustomArrayListImpl<E> extends AbstractCustomArrayList<E>
         size = 0;
     }
 
+    /**
+     * Возвращает элемент по указанному индексу
+     *
+     * @param index индекс элемента, который нужно получить
+     * @return элемент, находящийся по заданному индексу
+     * @throws IndexOutOfBoundsException если индекс вне допустимого диапазона
+     */
     @Override
     public E get(int index) {
         checkIndex(index);
         return (E) elements[index];
     }
 
+    /**
+     * Проверяет, пуст ли список
+     * @return true, если список пуст, иначе false
+     */
     @Override
     public boolean isEmpty() {
         return size == 0;
     }
 
+    /**
+     *  Удаляет элемент из списка по переданному индексу
+     * @param index индекс элемента, который необходимо удалить
+     * @return значение элемента, который удалили
+     */
     @Override
     public E remove(int index) {
         checkIndex(index);
@@ -94,6 +158,12 @@ public class CustomArrayListImpl<E> extends AbstractCustomArrayList<E>
         return result;
     }
 
+    /**
+     * Удаляет первое вхождение указанного элемента из списка
+     *
+     * @param o элемент, который нужно удалить
+     * @return true, если элемент был удален, иначе false
+     */
     @Override
     public boolean remove(Object o) {
         for (int i = 0; i < size; i++) {
@@ -105,6 +175,10 @@ public class CustomArrayListImpl<E> extends AbstractCustomArrayList<E>
         return false;
     }
 
+    /**
+     * Сортирует элементы списка в соответствии с заданным компаратором
+     * @param c компаратор, определяющий порядок сортировки
+     */
     @Override
     public void sort(Comparator<? super E> c) {
         if (size > 1) {
@@ -131,16 +205,28 @@ public class CustomArrayListImpl<E> extends AbstractCustomArrayList<E>
         return sb.toString();
     }
 
+    /**
+     * Изменяет размер массива, если он заполнен
+     */
     private void resize() {
         if (size == elements.length) {
             elements = grow();
         }
     }
 
+    /**
+     * Увеличивает размер массива при необходимости
+     * @return новый массив с увеличенной емкостью
+     */
     private Object[] grow() {
         return grow(size + 1);
     }
 
+    /**
+     * Увеличивает размер массива до указанной емкости
+     * @param size новая требуемая емкость
+     * @return новый массив с увеличенной емкостью
+     */
     private Object[] grow(int size) {
         int oldSize = elements.length;
         if (oldSize > 0 || elements != EMPTY_ARRAY) {
@@ -151,18 +237,32 @@ public class CustomArrayListImpl<E> extends AbstractCustomArrayList<E>
         }
     }
 
+    /**
+     * Проверяет, находится ли индекс в допустимом диапазоне
+     * @param index индекс для проверки
+     * @throws IndexOutOfBoundsException если индекс вне диапазона
+     */
     private void checkIndex(int index) {
         if (index < 0 || index >= size) {
             throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
         }
     }
 
+    /**
+     * Проверяет, может ли быть добавлен элемент по указанному индексу
+     * @param index индекс для проверки на добавление
+     * @throws IndexOutOfBoundsException если индекс вне допустимого диапазона
+     */
     private void checkIndexForAdd(int index) {
         if (index < 0 || index > size) {
             throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
         }
     }
 
+    /**
+     * Реализация алгоритма быстрой сортировки
+     * @param c компаратор, определяющий порядок сортировки
+     */
     private void quicksort(Comparator<? super E> c) {
         int left = 0, right = size - 1;
 
@@ -193,6 +293,17 @@ public class CustomArrayListImpl<E> extends AbstractCustomArrayList<E>
         }
     }
 
+    /**
+     * Разделяет подмассив на две части, используя метод разбиения для быстрой сортировки.
+     * Выбирает опорный элемент и перемещает элементы таким образом,
+     * чтобы элементы, меньшие опорного, находились слева, а большие - справа.
+     *
+     * @param array массив элементов, который нужно разобрать
+     * @param left левая граница подмассива
+     * @param right правая граница подмассива
+     * @param c компаратор, определяющий порядок сортировки
+     * @return индекс, по которому подмассив разделен
+     */
     private int partition(Object[] array, int left, int right, Comparator<? super E> c) {
         E pivot = (E) array[left];
         int i = left - 1, j = right + 1;
