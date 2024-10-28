@@ -5,6 +5,11 @@ import java.util.Comparator;
 
 public class AbstractCustomArrayList<E> implements CustomArrayList<E> {
     @Override
+    public void add(E e) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     public void add(int index, E element) {
         throw new UnsupportedOperationException();
     }

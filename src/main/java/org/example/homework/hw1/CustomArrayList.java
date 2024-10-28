@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.Comparator;
 
 public interface CustomArrayList<E> {
+    void add(E e);
+
     void add(int index, E element);
 
     void addAll(Collection<? extends E> c);

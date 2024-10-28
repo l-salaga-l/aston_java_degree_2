@@ -41,9 +41,17 @@ public class CustomArrayListImpl<E> extends AbstractCustomArrayList<E>
         }
     }
 
+    public int size() {
+        return size;
+    }
+
+    public void add(E element) {
+        add(size, element);
+    }
+
     @Override
     public void add(int index, E element) {
-        checkIndex(index);
+        checkIndexForAdd(index);
         resize();
 
         System.arraycopy(elements, index, elements, index + 1, size - index);
@@ -99,7 +107,9 @@ public class CustomArrayListImpl<E> extends AbstractCustomArrayList<E>
 
     @Override
     public void sort(Comparator<? super E> c) {
-        quicksort(c);
+        if (size > 1) {
+            quicksort(c);
+        }
     }
 
     @Override
@@ -142,6 +152,12 @@ public class CustomArrayListImpl<E> extends AbstractCustomArrayList<E>
     }
 
     private void checkIndex(int index) {
+        if (index < 0 || index >= size) {
+            throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
+        }
+    }
+
+    private void checkIndexForAdd(int index) {
         if (index < 0 || index > size) {
             throw new IndexOutOfBoundsException("Index: " + index + ", Size: " + size);
         }
@@ -165,7 +181,7 @@ public class CustomArrayListImpl<E> extends AbstractCustomArrayList<E>
             // Выполняем разбиение
             int indexPivot = partition(elements, left, right, c);
 
-            if (left < indexPivot - 1) {
+            if (left < indexPivot) {
                 indexStack[++head] = left;
                 indexStack[++head] = indexPivot;
             }
@@ -178,22 +194,25 @@ public class CustomArrayListImpl<E> extends AbstractCustomArrayList<E>
     }
 
     private int partition(Object[] array, int left, int right, Comparator<? super E> c) {
-        E pivot = (E) array[(left + right) / 2];
-        while (left < right) {
-            while (c.compare((E) array[right], pivot) > 0) {
-                right--;
+        E pivot = (E) array[left];
+        int i = left - 1, j = right + 1;
+
+        while (true) {
+            do {
+                i++;
+            } while (c.compare((E) array[i], pivot) < 0);
+
+            do {
+                j--;
+            } while (c.compare((E) array[j], pivot) > 0);
+
+            if (i >= j) {
+                return j;
             }
-            while (c.compare(pivot, (E) array[left]) > 0) {
-                left++;
-            }
-            if (left < right) {
-                E temp = (E) array[right];
-                array[right] = array[left];
-                array[left] = temp;
-                left++;
-                right--;
-            }
+
+            E temp = (E) array[i];
+            array[i] = array[j];
+            array[j] = temp;
         }
-        return left;
     }
 }
